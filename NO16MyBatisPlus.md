@@ -2,11 +2,11 @@ day38MyBatisPlus
 
 ### 1.MyBatisPlus的CRUD操作问题问题问题？？？
 
-![1663037906204](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1663037906204.png)
+![1663037906204](typora-user-images\1663037906204.png)
 
 
 
-![1663037691585](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1663037691585.png)
+![1663037691585](typora-user-images\1663037691585.png)
 
 应用：瑞吉项目一
 
@@ -26,7 +26,7 @@ day38MyBatisPlus
 
 问题1：因为serializable是序列化，所以要加L，但是为什么？**
 
-![1663037717656](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1663037717656.png)
+![1663037717656](typora-user-images\1663037717656.png)
 
 ![1663037844385](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1663037844385.png)
 
@@ -46,5 +46,5 @@ day38MyBatisPlus
         }
 ```
 
-![1663047729824](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1663047729824.png)
+![1663047729824](typora-user-images\1663047729824.png)
 

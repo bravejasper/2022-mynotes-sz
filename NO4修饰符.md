@@ -10,7 +10,7 @@ static修饰的内容是与对象无关的，即可以不通过对象操作。�
 
 
 
-![1659265552336](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1659265552336.png)
+![1659265552336](typora-user-images\1659265552336.png)
 
 
 

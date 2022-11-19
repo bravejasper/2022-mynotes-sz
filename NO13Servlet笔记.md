@@ -58,7 +58,7 @@ type/subtype
  */
 ```
 
-![1662347510588](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662347510588.png)
+![1662347510588](typora-user-images\1662347510588.png)
 
 ```
 String userAgent = request.getHeader("user-agent");
@@ -87,7 +87,7 @@ String userAgent = request.getHeader("user-agent");
  */
 ```
 
-![1662347519161](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662347519161.png)
+![1662347519161](typora-user-images\1662347519161.png)
 
 ```
 response.setHeader("refresh","秒数;url=跳转的路径"); //几秒之后跳转到指定的路径上
@@ -111,13 +111,13 @@ response.setHeader("refresh","5; url=http://www.baidu.com");
 
 ## 5.关闭冲突的tomcat端口号8080
 
-![1662469935637](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662469935637.png)
+![1662469935637](typora-user-images\1662469935637.png)
 
 
 
 ## 6.创建新数据库时在URL加时区
 
-![1662470026326](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662470026326.png)
+![1662470026326](typora-user-images\1662470026326.png)
 
 
 
@@ -125,17 +125,17 @@ day25
 
 ## 7.Cookie的概念和作用
 
-![1662548747961](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662548747961.png)
+![1662548747961](typora-user-images\1662548747961.png)
 
 ### 7.1案例-记录用户各自的上次访问时间
 
 
 
-![1662548778034](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662548778034.png)
+![1662548778034](typora-user-images\1662548778034.png)
 
 
 
 ## 8.Session钝化、活化
 
-![1662550500790](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662550500790.png)
+![1662550500790](typora-user-images\1662550500790.png)
 

@@ -55,7 +55,7 @@ project（项目、工程）-->model（模块）-->package（包）-->class（�
 
 注意（也可在最后运行调试时检查）：
 
-![1657011439983](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1657011439983.png)
+![1657011439983](typora-user-images\1657011439983.png)
 
 1.要检查project里是否有添加SDK版本（编译），以及语言水平是否也是SDK的相应版本（运行）；
 
@@ -144,7 +144,7 @@ public class HelloWorld {
 
 （关键字的中文意思）
 
-![1657181706723](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1657181706723.png)
+![1657181706723](typora-user-images\1657181706723.png)
 
 补充解释：
 
@@ -321,7 +321,7 @@ public class Test_02if格式1 {
 
 ### 4.for、while的不同点
 
-![1658318632723](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1658318632723.png)
+![1658318632723](typora-user-images\1658318632723.png)
 
 ## 十三、跳转控制语句
 

@@ -4,7 +4,7 @@
 
 获取字节输入流不太明白，需要看一下以前的字节输入输出流内容
 
-![1662193934284](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662193934284.png)
+![1662193934284](typora-user-images\1662193934284.png)
 
 
 
@@ -52,4 +52,4 @@ java.lang.IllegalArgumentException: Parameter Maps collection does not contain v
 org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map com.itheima.dao.UserDao.user
 ```
 
-![1662469399243](C:\Users\Jasper\AppData\Roaming\Typora\typora-user-images\1662469399243.png)
+![1662469399243](typora-user-images\1662469399243.png)
