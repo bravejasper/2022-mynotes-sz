@@ -65,7 +65,7 @@ create table 表名(
 
 2. 浮点/双精度型  
 
-   - **默认的范围  float或者double**
+   - **默认的范围  float或者double**（字母详情可看上表）
    - 指定范围     float(M,D)  eg: float(4,2)  表达的范围:  -99.99~99.99
 
 3. 字符串
@@ -102,7 +102,7 @@ create table 表名(
 - **unique:唯一约束**, 后面的数据不能和前面重复;  eg: cardNo varchar(18) unique;    cardNo字段不能出现重复的数据
 
 - **primary key；主键约束(非空+唯一)**;    一般用在表的id列上面.  每一张表基本上都有id列的, id列作为记录的唯一标识的 
-- **auto_increment: ==自动增长**,必须是设置了primary key之后,才可以使用auto_increment==（它会自增，所以可以设置数据为null，也并不会冲突）
+- **auto_increment: ==自动增长**,必须是设置了primary key之后,才可以使用auto_increment==（它会自增，所以可以设置数据值为null，也并不会冲突）
 - `id int  primary key   auto_increment` id不需要我们自己维护了, 插入数据的时候直接插入null, 自动的增长进行填充进去, 避免重复了.  
 
 注意:
@@ -362,3 +362,372 @@ create table product(
   - 物理删除: 真正的删除了, 数据不在, 使用delete就属于物理删除
   - 逻辑删除: 没有真正的删除, 数据还在. 搞一个标记, 其实逻辑删除是更新  eg: state字段   1 启用   0禁用
   - 工作里面一般使用逻辑删除用的多 
+
+
+
+### 第三章-DQL操作表记录-查询【重点】
+
+#### 3.1 基本查询
+
+- 语法:
+
+  - 查询所有的列:  `select * from 表名;`
+  - 查询某张表特定列: `select 字段名,字段名,... from 表名;`
+  - 去重查询:  `select distinct 字段名 from 表名;`
+  - 别名查询:   `select 字段名 as 别名,字段名 as 别名,...  from 表名  as 别名;`  -- as是可以省略的
+  - 列运算查询(+,-,*,/等):  `select 列运算 from 表名;`
+  - 基本条件查询:   `select  ...  from 表名 where  条件;`
+    - 比较运算符: `>   >=   <    <=    =  <>`
+    - between...and...  范围
+    - in(值,值,...)   范围
+    - like   模糊
+      - _  :  匹配一个字符
+      - %:   匹配0个到多个字符(大于等于0个)
+    - 逻辑运算符
+      - and
+      - or
+      - not
+
+- 案例:
+
+  ```sql
+  -- 练习:查询product表中所有的信息
+  select * from product;
+  
+  -- 练习:查询product表中pname,price字段的值
+  select pname,price from product;
+  
+  -- 练习:去重查询pname字段的值
+  select distinct pname from product;
+  -- 注意:去重查询distinct前面不能有其他字段名
+  select id,distinct pname from product;-- 报错
+  
+  -- 练习:对pname,price取别名查询
+  select pname as 商品名称,price as 商品价格 from product as p;
+  select pname  商品名称,price 商品价格 from product p;
+  
+  -- 练习: 查询每件商品的总金额
+  select price * num as 总金额 from product;
+  
+  
+  -- 练习: 查询price大于4000的商品信息
+  select * from product where price > 4000;
+  select * from product where price <> 4000;
+  
+  -- 练习: 查询price在4000到8000之间的商品信息
+  select * from product where price between 4000 and  8000;
+  
+  
+  -- 练习: 查询pid为1,3,5,7,9,11,13的商品信息
+  select * from product where pid in(1,3,5,7,9,11,13);
+  
+  -- 练习: 查询商品名称为iPh开头的所有商品信息
+  select * from product where pname like 'iPh%';
+  -- 练习: 查询商品名称含有手机的所有商品信息
+  select * from product where pname like '%手机%';
+  -- 练习: 查询商品名称为iPh开头,然后iPh后面有4位的所有商品信息
+  select * from product where pname like 'iPh____';
+  
+  
+  -- 练习: 查询price在4000到8000之间的商品信息
+  select * from product where price >= 4000 and  price <= 8000;
+  
+  -- 练习: 查询price大于4000或者小于1000之间的商品信息
+  select * from product where price > 4000 or  price < 1000;
+  
+  -- 练习: 查询pid不为1,3,5,7,9,11,13的商品信息
+  select * from product where not(pid in(1,3,5,7,9,11,13));
+  
+  ```
+
+  **！！！最后一个重点！！！**
+
+  
+
+- 练习
+
+  - 查询商品价格>3000的商品
+
+  - 查询id=1的商品
+
+  - 查询id<>1的商品
+
+  - 查询价格在3000到6000之间的商品
+
+  - 查询id在1，5，7，15范围内的商品
+
+  - 查询商品名以iPho开头的商品(iPhone系列) 
+
+  - 查询商品价格大于3000并且数量大于20的商品   (条件 and 条件 and...)
+
+  - 查询id=1或者价格小于3000的商品 
+
+    ```sql
+    -- - 查询商品价格>3000的商品
+    select * from product where price > 3000;
+    
+    -- - 查询id=1的商品
+    select * from product where pid=1;
+    
+    -- - 查询id<>1的商品
+    select * from product where pid<>1;
+    select * from product where pid!=1;
+    
+    -- - 查询价格在3000到6000之间的商品
+    select * from product where price >= 3000 and  price <= 6000;
+    select * from product where price between 3000 and 6000;
+    
+    
+    -- - 查询id在1，5，7，15范围内的商品
+    select * from product where pid in(1,5,7,15);
+    
+    -- - 查询商品名以iPho开头的商品(iPhone系列) 
+    select * from product where pname like 'iPho%';
+    
+    -- - 查询商品价格大于3000并且数量大于20的商品   (条件 and 条件 and...)
+    select * from product where price > 3000 and num > 20;
+    
+    -- - 查询id=1或者价格小于3000的商品 
+    select * from product where pid = 1 or price < 3000;
+    
+    ```
+
+    
+
+#### 3.2 排序查询
+
+- 环境的准备
+
+  ```sql
+  # 创建学生表(有sid,学生姓名,学生性别,学生年龄,分数列,其中sid为主键自动增长)
+  CREATE TABLE student(
+  	sid INT PRIMARY KEY auto_increment,
+  	sname VARCHAR(40),
+  	sex VARCHAR(10),
+  	age INT,
+    score DOUBLE
+  );
+  
+  INSERT INTO student VALUES(null,'zs','男',18,98.5);
+  INSERT INTO student VALUES(null,'ls','女',18,96.5);
+  INSERT INTO student VALUES(null,'ww','男',15,50.5);
+  INSERT INTO student VALUES(null,'zl','女',20,98.5);
+  INSERT INTO student VALUES(null,'tq','男',18,60.5);
+  INSERT INTO student VALUES(null,'wb','男',38,98.5);
+  INSERT INTO student VALUES(null,'小丽','男',18,100);
+  INSERT INTO student VALUES(null,'小红','女',28,28);
+  INSERT INTO student VALUES(null,'小强','男',21,95);
+  ```
+
+  
+
+- 语法:
+
+  ```sql
+  方式一: select ... from 表名 order by 字段名 [asc|desc];
+  方式二: select ... from 表名 order by 字段名 [asc|desc],字段名 [asc|desc];
+  注意:asc:升序,desc:降序,不指定默认是升序
+  ```
+
+  
+
+- 练习
+
+  1. 练习: 以分数降序查询所有的学生
+
+  2. 练习: 以分数降序查询所有的学生, 如果分数一致,再以age降序
+
+     ```sql
+     -- 1. 练习: 以分数降序查询所有的学生
+     select * from student order by score desc;
+     
+     -- 2. 练习: 以分数降序查询所有的学生, 如果分数一致,再以age降序
+     select * from student order by score desc,age desc;
+     ```
+
+     
+
+
+
+
+
+#### 3.3 聚合函数   
+
+| 聚合函数        | 作用                   |
+| --------------- | ---------------------- |
+| max(列名)       | 求这一列的最大值       |
+| min(列名)       | 求这一列的最小值       |
+| avg(列名)       | 求这一列的平均值       |
+| **count(列名)** | 统计这一列有多少条记录 |
+| sum(列名)       | 对这一列求总和         |
+
+1. 语法（**聚合函数会忽略null值，一般加上  ifnull(参数1,参数2)**  ）
+
+```sql
+SELECT 聚合函数(列名) FROM 表名;
+```
+
+2. 练习
+
+```sql
+-- 练习:求出学生表里面的最高分数
+select max(score) from student;
+
+-- 练习:求出学生表里面的最低分数
+select min(score) from student;
+
+-- 练习:求出学生表里面的分数的总和
+select sum(score) from student;
+
+-- 练习:求出学生表里面的平均分
+select avg(score) from student;
+
+-- 练习:统计学生的总人数 
+select count(score) from student;-- 9
+
+-- 修改: 把sname为wb的score修改为null
+update student set score = null where sname='wb';
+
+-- 练习:统计学生的总人数 
+select count(score) from student;-- 8
+-- 结论: 说明聚合函数会忽略null值
+-- 解决: 使用ifnull(参数1,参数2)函数,如果参数1的值为null,那么ifnull函数的结果就取参数2的值,否则就取参数1的值
+-- 练习:统计学生的总人数 
+select count(ifnull(score,0)) from student;-- 9
+
+-- 思考: 计算该表中的平均分
+select avg(score) from student;-- 计算8个人的平均分
+select avg(ifnull(score,0)) from student;-- 计算9个人的平均分
+```
+
+> 注意:  聚合函数会忽略空值NULL
+>
+> 如果不想忽略空值null,就使用ifnull(参数1,参数2)函数,进行判断
+>
+> 如果参数1为null,就取参数2的值,如果参数1不为null,就取参数1的值
+
+
+
+#### 3.4 分组查询
+
+1. 分组语法
+
+   ```java
+   select ... from 表名 [where 条件] [group by 分组字段] [having 条件]
+   ```
+
+   
+
+2. 练习
+
+   1. 练习:根据性别分组,统计男生的总人数和女生的总人数
+
+   2. 练习根据性别分组, 统计每一组学生的总人数> 5的(分组后筛选)
+
+      ```sql
+      -- 1. 练习:根据性别分组,统计男生的总人数和女生的总人数
+      -- 单独分组 没有意义,因为 返回每一组的第一条记录（5.5版本才有返回结果，5.7版本会报错）
+      select * from student group by sex;
+      -- 分组的目的一般为了做统计使用, 所以经常和聚合函数一起使用
+      select count(*) from student group by sex;
+      -- 结果只有两行，一行男生人数数字，一行女生人数数字，如下：
+      	1  3
+      	2  6
+      -- 分组查询如果不查询出分组字段的值,就无法得知结果属于那组
+      select sex,count(*) from student group by sex;
+      -- 结果增加了性别字段名，如下：
+      	1  女  3
+      	2  男  6
+      
+      -- 2. 练习根据性别分组, 统计每一组学生的总人数 > 5的(分组后筛选)
+      select sex,count(*) from student group by sex having count(*)>5;
+      -- 结果如下：
+      	1  男  6
+      ```
+
+      
+
+3. 注意事项
+
+   **单独分组 没有意义,因为 返回每一组的第一条记录**
+
+   **分组的目的一般为了做统计使用, 所以经常和聚合函数一起使用**
+
+   **分组查询如果不查询出分组字段的值,就无法得知结果属于那组**
+
+4. where和having的区别【面试】
+
+| 子名       | 作用                                                         |
+| ---------- | ------------------------------------------------------------ |
+| where 子句 | 1) 对查询结果进行分组前，将不符合where条件的行去掉，即在分组之前过滤数据，即**先过滤再分组**。2) **where后面不可以使用聚合函数** |
+| having字句 | 1) having 子句的作用是筛选满足条件的组，即在分组之后过滤数据，即**先分组再过滤**。2) **having后面可以使用聚合函数** |
+
+
+
+#### 3.5 分页查询  
+
+1. 语法
+
+```sql
+select ... from 表名 limit a,b; 
+a:从哪里开始查询, 从0开始计数 ,省略a不写,默认就是从0开始
+b:查询的数量【固定的,自定义的】
+分页查询规律:  limit (页码-1)*每页显示的记录数,每页显示的记录数
+```
+
+2. 练习:
+
+   -- 练习: 查询sid为1到4--->第1页
+   -- 练习: 查询sid为5到8--->第2页
+   -- 练习: 查询sid为9到12--->第3页
+
+   ```sql
+   -- 练习: 查询sid为1到4--->第1页
+   select * from student limit 0,4;
+   select * from student limit 4;
+   
+   -- 练习: 查询sid为5到8--->第2页
+   select * from student limit 4,4;
+   
+   -- 练习: 查询sid为9到12--->第3页
+   select * from student limit 8,4;
+   
+   -- 规律: limit (页码-1)*每页显示的记录数,每页显示的记录数
+   ```
+
+   
+
+3. 应用场景
+
+   如果数据库里面的数据量特别大, 我们不建议一次查询出来. 为了提升性能和用户体验, 使用分页
+
+### 查询的语法小结
+
+```sql
+select ... from 表名 [where...][group by...having...][order by...][limit...]
+
+select ... from ...
+select ... from ... where ...
+select ... from ... group by ...having...
+select ... from ... order by ...
+select ... from ... limit ...
+....
+
+
+软件的半成品
+
+```
+
+
+
+### 命令行窗口打开使用mysql
+
+win+R
+
+```
+登录启动：mysql -uroot -proot
+使用的数据库：use day14_1;
+展示数据库下的表：show tables;
+输入查询语句：XXX
+```
+
