@@ -936,7 +936,8 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 
 - 外键唯一：主表的主键和从表的外键（唯一），形成主外键关系，外键唯一`UNIQUE`
 - 外键是主键：主表的主键和从表的主键，形成主外键关系
-  ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/2.png)
+
+![1671542406637](Typoraphoto/1671542406637.png)
 
 ##### 多表设计之多表分析及创建
 
@@ -982,3 +983,304 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 
   
 
+### 第五章-连接查询
+
+**环境准备**
+
+```sql
+-- 创建部门表
+CREATE TABLE dept (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  NAME VARCHAR(20)
+);
+
+INSERT INTO dept (NAME) VALUES ('开发部'),('市场部'),('财务部');
+
+-- 创建员工表
+CREATE TABLE emp (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  NAME VARCHAR(10),
+  gender CHAR(1),   -- 性别
+  salary DOUBLE,   -- 工资
+  join_date DATE,  -- 入职日期
+  dept_id INT -- 因为后面还要插入非法数据，所以此时假装已添加外键
+);
+
+INSERT INTO emp(NAME,gender,salary,join_date,dept_id) VALUES('孙悟空','男',7200,'2013-02-24',1);
+INSERT INTO emp(NAME,gender,salary,join_date,dept_id) VALUES('猪八戒','男',3600,'2010-12-02',2);
+INSERT INTO emp(NAME,gender,salary,join_date,dept_id) VALUES('唐僧','男',9000,'2008-08-08',2);
+INSERT INTO emp(NAME,gender,salary,join_date,dept_id) VALUES('白骨精','女',5000,'2015-10-07',3);
+INSERT INTO emp(NAME,gender,salary,join_date,dept_id) VALUES('蜘蛛精','女',4500,'2011-03-14',1);
+```
+
+#### 5.1 交叉查询【了解】
+
+1. 语法
+
+```sql
+select ... from 表1,表2 ;  
+```
+
+2. 练习: 
+
+   1. 使用交叉查询部门和员工的信息
+
+   2. 练习: 使用交叉查询部门的名称和员工id,名称,salary,join_date信息
+
+      ```sql
+      -- 1. 练习: 使用交叉查询部门和员工的信息
+      select * from dept,emp;
+      -- 2. 练习: 使用交叉查询部门的名称和员工id,名称,salary,join_date信息
+      select dept.`NAME`,emp.id,emp.`NAME`,emp.salary,emp.join_date from dept,emp;
+      select d.`NAME`,e.id,e.`NAME`,e.salary,e.join_date from dept d,emp e;
+      
+      ```
+
+      
+
+
+
+![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E8%A1%A8%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A203.png)
+
+以上数据其实是左表的每条数据和右表的每条数据组合。左表有3条，右表有5条，最终组合后3*5=15条数据。
+
+**左表的每条数据和右表的每条数据组合，这种效果称为笛卡尔积**
+
+![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E8%A1%A8%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A204.png)
+
+#### 5.2 内连接查询【重点】
+
+- 内连接查询的是2张表**交集的部分(从表外键的值等于主表主键的值)**
+
+##### 隐式内连接
+
+- 隐式里面是没有inner关键字的
+
+  ```java
+  select ... from 表1,表2 where 连接条件 [and 其他条件]  -->(连接条件:外键的值等于主表主键的值) 
+  ```
+
+  
+
+- 练习:查询员工的id,姓名,性别,薪资,加入日期,所属部门
+
+  ```sql
+  select e.id,e.name,e.gender,e.salary,e.join_date,d.name  from emp e,dept d where e.dept_id = d.id;
+  ```
+
+##### 显示内连接
+
+- 显示里面是有inner关键字的
+
+  ```java
+  select ... from 表1 [inner] join 表2 on 连接条件 [ where 其它条件]
+  ```
+
+- 练习:查询员工的id,姓名,性别,薪资,加入日期,所属部门
+
+  ```mysql
+  select e.id,e.name,e.gender,e.salary,e.join_date,d.name  from emp e inner join  dept d on e.dept_id = d.id;
+  
+  ```
+
+**隐式内连接和显示内连接区别：**
+
+显示可以看出来谁是主表谁是从表，隐式不可以。
+
+#### 5.3 外连接【重点】
+
+##### 左外连接
+
+- 概述:  查询左表的全部数据，和左右两张表有交集部分的数据。
+
+​	以join左边的表为左表,展示左表的所有数据,根据条件查询连接右边表的数据,若满足条件则展示,若不满足则以null显示.
+
+​		可以理解为：==在内连接的基础上保证左边表的数据全部显示==
+
+1. 语法
+
+```sql
+select ... from 左表名 left [outer] join 右表名 on 连接条件
+```
+
+2. 练习:查询所有部门下的员工,没有员工就就显示null
+
+```sql
+-- 左外连接
+select * from dept left outer join emp on dept.id = emp.dept_id;
+select * from dept left  join emp on dept.id = emp.dept_id;
+-- 右外连接
+select * from emp right  join dept on dept.id = emp.dept_id;
+
+```
+
+##### 右外连接
+
+- 概述:  查询右表的全部数据，和左右两张表有交集部分的数据。
+
+​	以join右边的表为右表,展示右边表的所有数据,根据条件查询join左边表的数据,若满足则展示,若不满足则以null显示
+
+可以理解为：在内连接的基础上保证右边表的数据全部显示
+
+1. 语法
+
+```mysql
+select ... from 左表名 right [outer] join 右表名 on 连接条件
+```
+
+2. 练习:查询所有员工所对应的部门,没有部门就显示null
+
+```mysql
+-- 右外连接
+select * from dept right outer join emp on dept.id = emp.dept_id;
+-- 左外连接
+select * from emp left outer join dept on dept.id = emp.dept_id;
+```
+
+##### 内连接和外连接的区别
+
+- 内连接: 查询的是公共部分,满足连接条件的部分
+- 左外连接: 左边的数据全部显示出来. 再通过连接条件匹配出右边表的数据, 如果满足连接条件, 展示右边表的数据; 如果不满足, 右边的数据通过null代替
+- 右外连接: 右表的数据全部显示出来. 再通过连接条件匹配出左边表的数据, 如果满足连接条件, 展示左边表的数据; 如果不满足, 左边的数据通过null代替
+
+3. 应用
+
+```
+1.用户1和订单m
+  查询所有的用户的订单信息		外连接
+  查询下单的用户的信息         内连接
+
+2.用户1和账户m
+  查询所有的用户的账户信息      外连接
+  查询所有用户的开户信息        内连接
+```
+
+
+
+### 第六章-子查询【重点】
+
+#### 6.1 子查询入门
+
+**什么是子查询**  
+
+- **一个查询语句的结果作为另一个查询语句的条件**
+- 有查询的嵌套，内部的查询称为子查询
+- **子查询要使用括号**
+- 子查询结果的三种情况：
+  1. 子查询的结果是一个值的时候
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A202-1593711397873.png)
+  2. 子查询结果是单列多行的时候
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A203-1593711397874.png)
+  3. 子查询的结果是多行多列
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A204.png)
+
+
+
+#### 6.2 子查询进阶
+
+##### 6.2.1子查询的结果是一个值的时候
+
+子查询结果只要是`单个值`，肯定在`WHERE`后面作为`条件`
+`SELECT ... FROM 表 WHERE 字段 [=,>,<,<>,...]（子查询）;`
+
+1. **查询工资最高的员工是谁？** 
+
+   1. 查询最高工资是多少
+
+   ```sql
+     SELECT MAX(salary) FROM emp;
+   ```
+
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A205-1593711484566.png)
+
+   1. 根据最高工资到员工表查询到对应的员工信息
+
+   ```sql
+     SELECT * FROM emp WHERE salary=(SELECT MAX(salary) FROM emp);
+   ```
+
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A206-1593711484567.png)
+
+2. **查询工资小于平均工资的员工有哪些？**
+
+   1. 查询平均工资是多少
+
+   ```sql
+     SELECT AVG(salary) FROM emp;
+   ```
+
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A207-1593711484567.png)
+
+   1. 到员工表查询小于平均的员工信息
+
+   ```sql
+     SELECT * FROM emp WHERE salary < (SELECT AVG(salary) FROM emp);
+   ```
+
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A208-1593711484567.png)
+
+##### 6.2.2子查询结果是单列多行的时候
+
+子查询结果只要是`单列多行`，肯定在`WHERE`后面作为`条件`
+子查询结果是单列多行，结果集类似于一个数组，父查询使用`IN`运算符
+`SELECT ... FROM 表 WHERE 字段 IN （子查询）;`
+
+1. **查询工资大于5000的员工，来自于哪些部门的名字**  
+
+   1. 先查询大于5000的员工所在的部门id
+
+   ```sql
+     SELECT dept_id FROM emp WHERE salary > 5000;
+   ```
+
+     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A209-1593711484567.png)
+
+   1. 再查询在这些部门id中部门的名字
+
+   ```sql
+     SELECT dept.name FROM dept WHERE dept.id IN (SELECT dept_id FROM emp WHERE salary > 5000);
+   ```
+
+     ![](F:/2019授课班级/02_javaEE就业81期/day16_MySqlMySQL多表查询&事务/01_笔记/imgs/子查询10.png)
+
+2. **查询开发部与财务部所有的员工信息**
+
+   1. 先查询开发部与财务部的id
+
+   ```sql
+   SELECT id FROM dept WHERE NAME IN('开发部','财务部');
+   ```
+
+   ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A211.png)
+
+   1. 再查询在这些部门id中有哪些员工
+
+   ```sql
+   SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE NAME IN('开发部','财务部'));
+   ```
+
+   ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A212-1593711484568.png)
+
+##### 6.2.3子查询的结果是多行多列
+
+子查询结果只要是`多行多列`，肯定在`FROM`后面作为`表`
+`SELECT ... FROM （子查询） 表别名 WHERE 条件;`
+**子查询作为表需要取别名，否则这张表没用名称无法访问表中的字段**
+
+- **查询出2011年以后入职的员工信息，包括部门名称**
+
+  1. 在员工表中查询2011-1-1以后入职的员工
+
+  ```sql
+  SELECT * FROM emp WHERE join_date > '2011-1-1';
+  ```
+
+  ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A214-1593711484568.png)
+
+  1. 查询所有的部门信息，与上面的虚拟表中的信息组合，找出所有部门id等于的dept_id
+
+  ```sql
+  SELECT * FROM dept d, (SELECT * FROM emp WHERE join_date > '2011-1-1') e WHERE e.dept_id = d.id;
+  ```
+
+  ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A213.png)
