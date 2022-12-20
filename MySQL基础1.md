@@ -274,12 +274,12 @@ create table product(
 
 - 命令行插入中文数据报错:-----了解
 
- ![img](../../heimastudy/studymaterial/javaseAdvance/day14_MySql%E5%9F%BA%E7%A1%80/01_%E7%AC%94%E8%AE%B0/img/tu_3.png)
+![1671541928428](Typoraphoto/1671541928428.png)
 
 - 关闭服务,  net stop MySql
 - 在数据库软件的安装目录下面, 修改配置文件 my.ini中客户端的编码为gbk
 
-![1535858746067](../../heimastudy/studymaterial/javaseAdvance/day14_MySql%E5%9F%BA%E7%A1%80/01_%E7%AC%94%E8%AE%B0/img/1535858746067.png)
+![1671542003674](Typoraphoto/1671542003674.png)
 
 - 重新打开命令行,开启服务, net start MySql
 
@@ -748,7 +748,8 @@ win+R
 外键: 从表中的某个字段,该字段的值是引用主表中主键的值
 主表： 约束别人的表
 副表/从表： 被别人约束的表
-![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%A4%96%E9%94%AE04.png)
+
+![1671542186263](Typoraphoto/1671542186263.png)
 
 ##### 外键的语法
 
@@ -904,9 +905,10 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 多的一方:学生  员工   订单   
 
 **一对多建表原则**: 在从表(多的一方)创建一个字段,该字段作为外键指向主表(一的一方)的主键
-![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E4%B8%80%E5%AF%B9%E5%A4%9A-1593710157048.png)
 
-#### 多对多
+![1671542226059](Typoraphoto/1671542226059.png)
+
+##### 多对多
 
 多对多（m:n）
 例如：老师和学生，学生和课程，用户和角色
@@ -919,9 +921,9 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 
 多对多关系建表原则: **需要创建一张中间表，中间表中至少两个字段，这两个字段分别作为外键指向各自一方的主键。**
 
-![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/1.png)
+![1671542264273](Typoraphoto/1671542264273.png)
 
-#### 一对一
+##### 一对一
 
 一对一（1:1）: 公司和地址, 老公和老婆
 
@@ -936,7 +938,7 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 - 外键是主键：主表的主键和从表的主键，形成主外键关系
   ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/2.png)
 
-#### 多表设计之多表分析及创建
+##### 多表设计之多表分析及创建
 
 - 需求:完成一个学校的选课系统，在选课系统中包含班级，学生和课程这些实体。
 
