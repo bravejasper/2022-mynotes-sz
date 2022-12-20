@@ -904,7 +904,7 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 多的一方:学生  员工   订单   
 
 **一对多建表原则**: 在从表(多的一方)创建一个字段,该字段作为外键指向主表(一的一方)的主键
-
+![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E4%B8%80%E5%AF%B9%E5%A4%9A-1593710157048.png)
 
 #### 多对多
 
@@ -919,7 +919,7 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 
 多对多关系建表原则: **需要创建一张中间表，中间表中至少两个字段，这两个字段分别作为外键指向各自一方的主键。**
 
-
+![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/1.png)
 
 #### 一对一
 
@@ -934,7 +934,7 @@ INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添
 
 - 外键唯一：主表的主键和从表的外键（唯一），形成主外键关系，外键唯一`UNIQUE`
 - 外键是主键：主表的主键和从表的主键，形成主外键关系
-  
+  ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/2.png)
 
 #### 多表设计之多表分析及创建
 
