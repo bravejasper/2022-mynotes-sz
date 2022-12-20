@@ -1,3 +1,5 @@
+## 第一部分：基础
+
 ### DDL操作数据库
 
 - 语法:
@@ -730,4 +732,251 @@ win+R
 展示数据库下的表：show tables;
 输入查询语句：XXX
 ```
+
+
+
+## 第二部分：进阶
+
+### 第四章-多表间的关系
+
+#### 4.1 外键约束【重点】
+
+##### 外键约束作用
+
+- **用来维护多表之间关系**
+
+外键: 从表中的某个字段,该字段的值是引用主表中主键的值
+主表： 约束别人的表
+副表/从表： 被别人约束的表
+![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%A4%96%E9%94%AE04.png)
+
+##### 外键的语法
+
+##### 添加外键
+
+```sql
+1. 新建表时增加外键：
+[CONSTRAINT] [外键约束名称] FOREIGN KEY(外键字段名) REFERENCES 主表名(主键字段名)
+关键字解释：
+CONSTRAINT -- 约束关键字
+外键约束名称 -- 名称可随意，一般为见名知意可：从表名简写_主表名简写_外键字段名简写
+FOREIGN KEY(外键字段名) -- 某个字段作为外键
+REFERENCES -- 主表名(主键字段名) 表示参照主表中的某个字段
+
+2. 已有表增加外键：
+ALTER TABLE 从表名 ADD [CONSTRAINT] [外键约束名称] FOREIGN KEY (外键字段名) REFERENCES 主表(主键字段名);
+-- 需要注意：添加外键时从表、主表内的数据必须合理正确（从表中有主表中不存在的数据是不合理非法的），否则会添加外键失败
+
+```
+
+```sql
+-- 创建员工表
+CREATE TABLE employee (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	NAME VARCHAR(20),
+	age INT,
+	dep_id INT,
+	constraint emp_dep_fk1 foreign key(dep_id) references department(id)
+);
+
+-- 添加员工,dep_id表示员工所在的部门
+INSERT INTO employee (NAME, age, dep_id) VALUES 
+('张三', 20, 1), 
+('李四', 21, 1), 
+('王五', 20, 1), 
+('老王', 20, 2),
+('大王', 22, 2),
+('小王', 18, 2);
+
+-- 往员工信息表中插入一条不存在的部门员工
+INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,添加不了
+```
+
+
+
+##### 删除外键
+
+- `alter table 表 drop foreign key 外键名称;`
+
+  ```sql
+  -- 删除外键:  alter table 表 drop foreign key 外键名称;
+  alter table employee drop foreign key emp_dep_fk1 ;
+  -- 往员工信息表中插入一条不存在的部门员工
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 可以添加
+  ```
+
+  
+
+- **为已存在的表添加外键,注意:外键字段上不能有非法数据**
+
+- `alter table 表名 add constraint 外键名称 foreign key(外键字段名) reference 主表(主键名)`
+
+  ```sql
+  -- 为employee表重新添加外键,注意employee表的dep_id字段中有非法数据
+  alter table employee add constraint emp_dep_fk1 foreign key(dep_id) references department(id);-- 添加不成功,因为外键字段上有非法数据
+  
+  -- 解决办法: 需要删除非法数据
+  delete from employee where id = 8;
+  
+  -- 为employee表重新添加外键,employee表的dep_id字段中没有非法数据
+  alter table employee add constraint emp_dep_fk1 foreign key(dep_id) references department(id);-- 添加成功
+  
+  -- 往员工信息表中插入一条不存在的部门员工
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('赵六', 20, 6); -- 报错,不可以添加
+  
+  ```
+
+  
+
+  
+
+##### 外键的级联
+
+- 要把部门表中的id值2，改成5，能不能直接修改呢？
+
+  ```sql
+  UPDATE department SET id=5 WHERE id=2;
+  ```
+
+  不能直接修改:Cannot delete or update a parent row: a foreign key constraint fails 如果副表(员工表)中有引用的数据,不能直接修改主表(部门表)主键
+
+  要删除部门id等于1的部门, 能不能直接删除呢？
+
+  ```sql
+  DELETE FROM department WHERE id = 1;
+  ```
+
+  不能直接删除:Cannot delete or update a parent row: a foreign key constraint fails 如果副表(员工表)中有引用的数据,不能直接删除主表(部门表)数据
+
+  **什么是级联操作**：
+  在修改和删除主表的主键时，同时更新或删除副表的外键值，称为级联操作
+  `ON UPDATE CASCADE` -- 级联更新，主表主键发生更新时，外键也会更新
+  `ON DELETE CASCADE` -- 级联删除，主键主键发生删除时，外键也会删除
+
+  具体操作：
+
+  - 删除employee表
+  - 重新创建employee表，添加级联更新和级联删除
+
+  ```sql
+  CREATE TABLE employee (
+  	id INT PRIMARY KEY AUTO_INCREMENT,
+  	NAME VARCHAR(30),
+  	age INT,
+  	dep_id INT,
+  	CONSTRAINT employee_dep_fk FOREIGN KEY (dep_id) REFERENCES department(id) ON UPDATE CASCADE ON DELETE CASCADE
+  );
+  ```
+
+- 再次添加数据到员工表和部门表
+
+```sql
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('张三', 20, 1);
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('李四', 21, 1);
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('王五', 20, 1);
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('老王', 20, 2);
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('大王', 22, 2);
+  INSERT INTO employee (NAME, age, dep_id) VALUES ('小王', 18, 2);
+```
+
+- 把部门表中id等于2的部门改成id等于5--->员工表中部门id为2的员工的部门id也会改为5
+
+```sql
+  UPDATE department SET id=5 WHERE id=2; -- 成功
+```
+
+- 删除部门id为1的部门---员工表中部门id为1的员工也会删除
+
+```sql
+  DELETE FROM department WHERE id=1;-- 成功
+```
+
+
+
+#### 4.2 多表间关系
+
+##### 一对多
+
+例如：班级和学生，部门和员工，客户和订单
+
+一的一方: 班级  部门  客户  
+
+多的一方:学生  员工   订单   
+
+**一对多建表原则**: 在从表(多的一方)创建一个字段,该字段作为外键指向主表(一的一方)的主键
+
+
+#### 多对多
+
+多对多（m:n）
+例如：老师和学生，学生和课程，用户和角色
+
+一个老师可以有多个学生,一个学生也可以有多个老师  多对多的关系
+
+一个学生可以选多门课程,一门课程也可以由多个学生选择 多对多的关系
+
+一个用户可以有多个角色,一个角色也可以有多个用户 多对多的关系
+
+多对多关系建表原则: **需要创建一张中间表，中间表中至少两个字段，这两个字段分别作为外键指向各自一方的主键。**
+
+
+
+#### 一对一
+
+一对一（1:1）: 公司和地址, 老公和老婆
+
+例如: 一个公司只能有一个注册地址，一个注册地址只能对应一个公司。 
+
+例如: 一个老公可以有一个老婆,一个老婆只能有一个老公
+
+在实际的开发中应用不多.因为**一对一可以创建成一张表**。
+两种建表原则：
+
+- 外键唯一：主表的主键和从表的外键（唯一），形成主外键关系，外键唯一`UNIQUE`
+- 外键是主键：主表的主键和从表的主键，形成主外键关系
+  
+
+#### 多表设计之多表分析及创建
+
+- 需求:完成一个学校的选课系统，在选课系统中包含班级，学生和课程这些实体。
+
+- 分析:
+
+  - 分析多表间关系
+    - 班级表和学生表属于一对多
+    - 学生表和课程表属于多对多
+  - 明确多表建表原则
+    - 一对多:  在多的一方设置一个外键指向一的一方的主键
+    - 多对多: 创建一张中间表,中间表至少有2个字段,分别作为外键指向各自一方的主键
+
+- 实现:
+
+  ```mysql
+  create table class(
+  	cid int primary key auto_increment,
+  	cname varchar(30)
+  );
+  
+  create table student(
+  	sid int primary key auto_increment,
+  	sname varchar(30),
+  	cid int,
+  	constraint stu_cls_fk1 foreign key(cid) references class(cid)
+  );
+  
+  create table course(
+  	cid int primary key auto_increment,
+  	cname varchar(30)
+  );
+  
+  create table cou_stu(
+  	cno int,
+  	sno int,
+  	constraint cou_stu_fk1 foreign key(cno) references course(cid),
+  	constraint cou_stu_fk2 foreign key(sno) references student(sid)
+  );
+  
+  ```
+
+  
 
