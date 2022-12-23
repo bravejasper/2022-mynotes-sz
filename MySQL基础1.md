@@ -401,6 +401,7 @@ create table product(
   
   -- 练习:去重查询pname字段的值
   select distinct pname from product;
+  -- 如果不加去重distinct，查询出的结果可能会一个名称出现多次（因为在记录中有多条相同的名称），加了以后就只保留一个名称
   -- 注意:去重查询distinct前面不能有其他字段名
   select id,distinct pname from product;-- 报错
   
@@ -442,7 +443,7 @@ create table product(
   
   ```
 
-  **！！！最后一个重点！！！**
+  **！！！最后一个重点：不为XXX！！！**
 
   
 
@@ -1038,15 +1039,13 @@ select ... from 表1,表2 ;
 
       
 
-
-
-![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E8%A1%A8%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A203.png)
+![1671802316008](Typoraphoto/1671802316008.png)
 
 以上数据其实是左表的每条数据和右表的每条数据组合。左表有3条，右表有5条，最终组合后3*5=15条数据。
 
 **左表的每条数据和右表的每条数据组合，这种效果称为笛卡尔积**
 
-![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E8%A1%A8%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A204.png)
+![1671802361622](Typoraphoto/1671802361622.png)
 
 #### 5.2 内连接查询【重点】
 
@@ -1168,11 +1167,11 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
 - **子查询要使用括号**
 - 子查询结果的三种情况：
   1. 子查询的结果是一个值的时候
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A202-1593711397873.png)
-  2. 子查询结果是单列多行的时候
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A203-1593711397874.png)
-  3. 子查询的结果是多行多列
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A204.png)
+  2. ![1671802434569](Typoraphoto/1671802434569.png)
+  3. 子查询结果是单列多行的时候
+  4. ![1671802475866](Typoraphoto/1671802475866.png)
+  5. 子查询的结果是多行多列
+  6. ![1671802501764](Typoraphoto/1671802501764.png)
 
 
 
@@ -1191,7 +1190,7 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
      SELECT MAX(salary) FROM emp;
    ```
 
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A205-1593711484566.png)
+     ![1671802554873](Typoraphoto/1671802554873.png)
 
    1. 根据最高工资到员工表查询到对应的员工信息
 
@@ -1199,7 +1198,7 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
      SELECT * FROM emp WHERE salary=(SELECT MAX(salary) FROM emp);
    ```
 
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A206-1593711484567.png)
+   ![1671802603082](Typoraphoto/1671802603082.png)
 
 2. **查询工资小于平均工资的员工有哪些？**
 
@@ -1209,7 +1208,7 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
      SELECT AVG(salary) FROM emp;
    ```
 
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A207-1593711484567.png)
+   ![1671802643522](Typoraphoto/1671802643522.png)
 
    1. 到员工表查询小于平均的员工信息
 
@@ -1217,7 +1216,7 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
      SELECT * FROM emp WHERE salary < (SELECT AVG(salary) FROM emp);
    ```
 
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A208-1593711484567.png)
+    ![1671802675084](Typoraphoto/1671802675084.png)
 
 ##### 6.2.2子查询结果是单列多行的时候
 
