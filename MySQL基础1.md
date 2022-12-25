@@ -1232,7 +1232,7 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
      SELECT dept_id FROM emp WHERE salary > 5000;
    ```
 
-     ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A209-1593711484567.png)
+   ![1671942851520](Typoraphoto/1671942851520.png)
 
    1. 再查询在这些部门id中部门的名字
 
@@ -1240,7 +1240,7 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
      SELECT dept.name FROM dept WHERE dept.id IN (SELECT dept_id FROM emp WHERE salary > 5000);
    ```
 
-     ![](F:/2019授课班级/02_javaEE就业81期/day16_MySqlMySQL多表查询&事务/01_笔记/imgs/子查询10.png)
+   ![1671942931879](Typoraphoto/1671942931879.png)
 
 2. **查询开发部与财务部所有的员工信息**
 
@@ -1250,15 +1250,17 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
    SELECT id FROM dept WHERE NAME IN('开发部','财务部');
    ```
 
-   ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A211.png)
+   ![1671942983479](Typoraphoto/1671942983479.png)
+
+   
 
    1. 再查询在这些部门id中有哪些员工
-
+   
    ```sql
-   SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE NAME IN('开发部','财务部'));
+SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE NAME IN('开发部','财务部'));
    ```
-
-   ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A212-1593711484568.png)
+   
+   ![1671943019671](Typoraphoto/1671943019671.png)
 
 ##### 6.2.3子查询的结果是多行多列
 
@@ -1274,7 +1276,7 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
   SELECT * FROM emp WHERE join_date > '2011-1-1';
   ```
 
-  ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A214-1593711484568.png)
+  ![1671943122287](Typoraphoto/1671943122287.png)
 
   1. 查询所有的部门信息，与上面的虚拟表中的信息组合，找出所有部门id等于的dept_id
 
@@ -1282,4 +1284,6 @@ select * from emp left outer join dept on dept.id = emp.dept_id;
   SELECT * FROM dept d, (SELECT * FROM emp WHERE join_date > '2011-1-1') e WHERE e.dept_id = d.id;
   ```
 
-  ![](../../heimastudy/studymaterial/javaseAdvance/day15-MySQL%E8%BF%9B%E9%98%B6/01_%E7%AC%94%E8%AE%B0/img/%E5%AD%90%E6%9F%A5%E8%AF%A213.png)
+  ![1671943059907](Typoraphoto/1671943059907.png)
+  
+  
