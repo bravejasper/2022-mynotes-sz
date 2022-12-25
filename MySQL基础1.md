@@ -45,6 +45,8 @@
 
 ### 第一章-DDL操作表
 
+数据定义语言DDL(Data Definition Language)
+
 #### 1.1 创建表【重点】
 
 ##### 1.语法
@@ -195,6 +197,8 @@ rename table student to teacher;
   
 
 ### 第二章-DML操作表记录-增删改【重点】
+
+数据操纵语言DML(Data Manipulation Language)
 
 - 准备工作: 创建一张商品表(商品id,商品名称,商品价格,商品数量.) 
 
@@ -368,6 +372,8 @@ create table product(
 
 
 ### 第三章-DQL操作表记录-查询【重点】
+
+数据查询语言DQL(Data Query Language)
 
 #### 3.1 基本查询
 
@@ -665,7 +671,7 @@ select avg(ifnull(score,0)) from student;-- 计算9个人的平均分
 | where 子句 | 1) 对查询结果进行分组前，将不符合where条件的行去掉，即在分组之前过滤数据，即**先过滤再分组**。2) **where后面不可以使用聚合函数** |
 | having字句 | 1) having 子句的作用是筛选满足条件的组，即在分组之后过滤数据，即**先分组再过滤**。2) **having后面可以使用聚合函数** |
 
-
+where和having的区别：两者起作用的地方不一样，where作用于**表或视图**，是表和视图的查询条件。having作用于**分组后的记录**，用于选择满足条件的组。
 
 #### 3.5 分页查询  
 
@@ -716,12 +722,13 @@ select ... from ... order by ...
 select ... from ... limit ...
 ....
 
-
-软件的半成品
-
 ```
 
+select ... from student where 条件 group by 分组字段 having 条件 order by 排序字段
 
+　　执行顺序：from->where->group by->having->order by->select
+
+　　注意：group by 通常和聚合函数(avg(),count()...)一起使用 ,经常先使用group by关键字进行分组，然后再进行集合运算。
 
 ### 命令行窗口打开使用mysql
 
@@ -1287,3 +1294,280 @@ SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE NAME IN('开发部
   ![1671943059907](Typoraphoto/1671943059907.png)
   
   
+
+### 第七章-事务
+
+环境的准备
+
+```sql
+-- 账户表
+create table account(
+    id int primary key auto_increment,
+    name varchar(20),
+    money double
+);
+
+insert into account values (null,'zs',1000);
+insert into account values (null,'ls',1000);
+insert into account values (null,'ww',1000);
+```
+
+#### 7.1 事务的概述
+
+##### 什么是事务
+
+- 事务指逻辑上的一组操作，组成这组操作的单元要么全部成功，要么全部失败。
+  - 操作: zs向李四转账100元   zs:1000,ls:1000
+  - 组成单元: zs钱-100, ls钱+100
+    - 操作成功: zs钱900,ls钱1100
+    - 操作失败: zs钱1000,ls钱1000
+    - 不可能发生: zs钱900,ls钱1000;    zs钱1000,ls钱1100
+
+##### 事务的作用
+
+​	保证一组操作全部成功或者失败。   
+
+
+
+
+
+
+
+#### 7.2 MYSQL进行事务管理  
+
+##### 自动管理事务(mysql默认)
+
+​	一条sql语句就是一个事务(mysql默认自动开启事务,自动提交事务)
+
+```sql
+-- 场景: zs向ls转账100元
+-- zs钱-100 ls钱+100
+-- zs钱-100
+update account set money = money - 100 where name = 'zs';
+
+-- ls钱+100
+update account set money = money + 100 where name = 'ls';
+-- 如果是自动事务管理,在java程序中,如果zs钱-100之后发生了异常,ls钱+100的代码就执行不了了,那么就会出现zs钱变成900,ls钱依然还是1000
+
+-- 查看mysql是否是自动提交事务
+show variables like '%commit%';  
+```
+
+
+
+##### 手动管理事务 
+
+- 方式一: 手动开启事务的方式 【掌握】
+
+  ​	`start transaction;开启事务`
+
+     ` commit；提交   ` 	
+
+  ​	 `rollback；回滚`
+
+  ```sql
+  -- 	场景: zs向ls转账100元
+  -- 没有异常
+  -- 开启事务
+  start transaction;
+  
+  -- zs钱-100
+  update account set money = money - 100 where name = 'zs';
+  -- ls钱+100
+  update account set money = money + 100 where name = 'ls';
+  
+  -- 提交事务
+  commit;
+  
+  
+  -- 有异常
+  -- 开启事务
+  start transaction;
+  
+  -- zs钱-100
+  update account set money = money - 100 where name = 'zs';
+  -- 可能在这里发生异常
+  -- ls钱+100
+  update account set money = money + 100 where name = 'ls';
+  
+  -- 回滚事务
+  rollback;
+  -- 提交事务或者回滚事务都会结束事务
+  
+  ```
+
+- 方式二: 设置MYSQL中的自动提交的参数【了解】
+
+  查看MYSQL中事务是否自动提交
+
+  ```sql
+  show variables like '%commit%';
+  ```
+
+  设置自动提交的参数为OFF
+
+  ```sql
+  set autocommit = 0;-- 0:OFF  1:ON
+  ```
+
+
+
+##### 事务原理
+
+![1671976649740](Typoraphoto/1671976649740.png)
+
+
+
+##### 回滚点【了解】
+
+###### 1什么是回滚点
+
+​	在某些成功的操作完成之后，后续的操作有可能成功有可能失败，但是不管成功还是失败，前面操作都已经成功，可以在当前成功的位置设置一个回滚点。可以供后续失败操作返回到该位置，而不是返回所有操作，这个点称之为回滚点。
+
+###### 2  回滚点的操作语句
+
+![1671976691156](Typoraphoto/1671976691156.png)
+
+###### 3具体操作
+
+1)    将数据还原到1000
+
+2)    开启事务
+
+3)    让张三账号减3次钱 
+
+4)    设置回滚点：savepoint three_times;
+
+5)    让张三账号减4次钱
+
+6)    回到回滚点：rollback to three_times;
+
+- 总结：设置回滚点可以让我们在失败的时候回到回滚点，而不是回到事务开启的时候, 回滚到回滚点不会结束事务。
+
+```sql
+1)    将数据还原到1000
+2)    开启事务
+start transaction;
+3)    让张三账号减3次钱 
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+4)    设置回滚点
+savepoint abc;
+5)    让张三账号减4次钱
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+6)    回到回滚点
+rollback to abc;
+7)    让张三账号减4次钱
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+update account set money = money - 100 where name = 'zs';
+8)    结束事务
+commit;
+
+
+
+```
+
+**应用场景**
+
+ 	插入大量的数据的时候.  1亿条数据 需要插入很久.  要求: 1亿条数据是一个整体,要么全部插入成功的 要么都不插入成功.
+
+##### 注意
+
+- 建议手动开启事务, 用一次 就开启一次,用完了,就关闭
+
+- 开启事务之后, 要么commit, 要么rollback
+
+- 一旦commit或者rollback, 当前的事务就结束了
+
+- 回滚到指定的回滚点, 但是这个时候事务没有结束的
+
+  
+
+#### 7.3 事务特性和隔离级别
+
+##### 事务特性【面试题】
+
+- 原子性（Atomicity）原子性是指事务是一个不可分割的工作单位，事务中的操作要么都发生，要么都不发生。   
+
+  ```sql
+  eg: zs 1000; ls 1000; 
+  	zs 给 ls转100
+  	要么都发生zs 900; ls 1100;
+  	要么都不发生zs 1000; ls 1000;
+  ```
+
+- 一致性（Consistency）事务前后数据的完整性必须保持一致.   
+
+  ```sql
+  eg: zs 1000; ls 1000;  一共2000
+  	zs 给 ls转100
+  	要么都发生 zs 900; ls 1100; 	一共2000
+  	要么都不发生zs 1000; ls 1000; 一共2000
+  ```
+
+- 持久性（Durability）持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的，接下来即使数据库发生故障也不应该对其有任何影响。  
+
+  ```sql
+  eg: zs 1000 给小红 转520, 张三 提交了
+  ```
+
+- 隔离性（Isolation）事务的隔离性是指多个用户并发操作数据库时，一个用户的事务不能被其它用户的事务所干扰，多个并发事务之间数据要相互隔离。 简单来说: **事务之间互不干扰**
+
+##### 如果不考虑隔离性，会引发下面的问题
+
+​	事务在操作时的理想状态： 所有的事务之间保持隔离，互不影响。因为并发操作，多个用户同时访问同一个数据。可能引发并发访问的问题
+
+![1671976727037](Typoraphoto/1671976727037.png)
+
+##### 事务隔离级别
+
+​	可以通过设置事务隔离级别解决读的问题
+
+###### 事务四个隔离级别  
+
+| **级别** | **名字** | **隔离级别**     | **脏读** | **不可重复读** | **幻读** | **数据库默认隔离级别** |
+| -------- | -------- | ---------------- | -------- | -------------- | -------- | ---------------------- |
+| **1**    | 读未提交 | read uncommitted | 是       | 是             | 是       |                        |
+| **2**    | 读已提交 | read committed   | 否       | 是             | 是       | Oracle                 |
+| **3**    | 可重复读 | repeatable read  | 否       | 否             | 是       | MySQL                  |
+| **4**    | 串行化   | serializable     | 否       | 否             | 否       |                        |
+
+> 隔离级别越高，安全性越高，性能(效率)越差。
+
+###### 设置隔离级别
+
+- 设置事务隔离级别
+
+```sql
+set session transaction isolation level  隔离级别;
+eg: 设置事务隔离级别为:read uncommitted,read committed,repeatable read,serializable
+eg: set session transaction isolation level read uncommitted;
+```
+
+- 查询当前事务隔离级别
+
+```sql
+select @@tx_isolation;
+```
+
+
+
+
+
+#### 7.4 演示数据库安全性问题的发生
+
+1. 演示脏读
+2. 演示避免脏读,并演示不可以重复读
+3. 演示避免不可重复读
+4. 演示隔离级别Serializable
+
+查看《数据安全性问题的演示》md文档
+
+ 
+
