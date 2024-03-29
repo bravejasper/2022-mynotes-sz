@@ -226,6 +226,33 @@ vi index.html
 
 #### 9.创建并运行一个MySQL容器，**目录**挂载
 
+##### 部分问题
+
+1.Linux虚拟机mysql安装出现了一个错误：依赖检测失败
+
+![1711718668948](Typoraphoto/1711718668948.png)
+
+```
+解决方法：加nodeps或其他
+rpm -ivh mysql-community-common-5.7.28-1.el7.x86_64.rpm nodeps或其他
+ 或
+rpm -ivh mysql-community-common-5.7.28-1.el7.x86_64.rpm --force
+ 或
+rpm -ivh mysql-community-server-5.7.28-1.el7.x86_64.rpm --nodeps --forc
+
+
+解析：rpm -ivh mysql-community-server-5.7.28-1.el7.x86_64.rpm --nodeps --force:
+        -i: 这个选项告诉rpm安装包。
+        -v: 启用详细的输出，显示安装进度。
+        -h: 显示哈希标记，以#字符表示进度。
+        mysql-community-common-5.7.28-1.el7.x86_64.rpm: 这是要安装的RPM包的名称。
+
+        --nodeps: 忽略依赖关系。这意味着rpm会安装mysql-community-server，即使它有未满足的依赖关系。
+        --force: 强制安装，即使可能存在依赖关系问题或其他问题。
+```
+
+
+
 ##### 9.1在虚拟机中创建并运行一个MySQL容器
 
 ```sh
