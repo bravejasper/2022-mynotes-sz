@@ -66,7 +66,6 @@ Ctrl+Shift + Enter，语句完成
  Ctrl+Shift+U，大小写转化
  Ctrl+Y，删除当前行
 
-
  Shift+Enter，向下插入新行
  psvm/sout，main/System.out.println(); Ctrl+J，查看更多
  Ctrl+Shift+F，全局查找
@@ -82,6 +81,7 @@ Ctrl+Shift + Enter，语句完成
  Ctrl+Backspace，按单词删除
  Ctrl+”+/-”，当前方法展开、折叠
  Ctrl+Shift+”+/-”，全部展开、折叠
+
  【调试部分、编译】
  Ctrl+F2，停止
  Alt+Shift+F9，选择 Debug
@@ -115,6 +115,7 @@ Ctrl+Shift + Enter，语句完成
  Ctrl+Shift+F4，关闭活动选项卡
  Ctrl+Tab，转到下一个拆分器
  Ctrl+Shift+Tab，转到上一个拆分器
+
  【重构】
  Ctrl+Alt+Shift+T，弹出重构菜单
  Shift+F6，重命名
@@ -122,6 +123,7 @@ Ctrl+Shift + Enter，语句完成
  F5，复制
  Alt+Delete，安全删除
  Ctrl+Alt+N，内联
+
  【查找】
  Ctrl+F，查找
  Ctrl+R，替换
@@ -135,5 +137,11 @@ Ctrl+Shift + Enter，语句完成
  Ctrl+Alt+F7，显示用法
  Ctrl+F7，在文件中查找用法
  Ctrl+Shift+F7，在文件中高亮显示用法
+
+
+
+【2024补充】
+
+Alt+鼠标上下拉动，选中多行的同列进行操作
 
  
